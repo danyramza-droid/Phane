@@ -480,6 +480,109 @@ async def manifiesto(request):
     return web.json_response({})
 
 
+# ---- 29-oct: descargar con un clic (envuelve tools/download_models.py; una descarga a la vez; solo URLs de models.json) ----
+_DL = {"proc": None, "args": [], "files": [], "totalGB": 0.0, "log": None, "t0": 0.0, "what": ""}
+_DL_LOG = os.path.join(_USER, "descarga.log")
+
+
+def _dl_spec():
+    with open(os.path.join(_DIR, "models.json"), encoding="utf-8") as f:
+        return json.load(f)
+
+
+def _dl_files(spec, ids=None, preset=None):
+    if preset in ("quick", "starter"):
+        return list(spec[preset]["files"])
+    known = {e["id"]: e for e in spec["engines"]}
+    return list(dict.fromkeys(f for i in (ids or []) if i in known for f in known[i]["files"]))
+
+
+def _dl_have_gb(files, spec):
+    """GB ya en disco de esos archivos (completos + .part a medias): el avance no depende de leer la salida del script."""
+    tot = 0
+    for f in files:
+        p = os.path.join(folder_paths.models_dir, f)
+        if os.path.isfile(p):
+            tot += os.path.getsize(p)
+        elif os.path.isfile(p + ".part"):
+            tot += os.path.getsize(p + ".part")
+        elif os.path.isdir(os.path.dirname(p)) and not spec["files"].get(f, {}).get("url"):   # repo entero (Qwen-TTS)
+            for r, _, ns in os.walk(os.path.dirname(p)):
+                tot += sum(os.path.getsize(os.path.join(r, n)) for n in ns)
+    return tot / 2**30
+
+
+@routes.post("/phane/api/descargar")
+async def descargar(request):
+    import subprocess, sys, time
+    script = os.path.join(_DIR, "tools", "download_models.py")
+    if not os.path.isfile(script):
+        return web.json_response({"error": "Esta copia no trae tools/download_models.py"}, status=404)
+    if _DL["proc"] and _DL["proc"].poll() is None:
+        return web.json_response({"error": "Ya hay una descarga en curso", "what": _DL["what"]}, status=409)
+    body = await request.json()
+    spec = _dl_spec()
+    ids = [i for i in (body.get("ids") or []) if isinstance(i, str)]
+    preset = body.get("preset") if body.get("preset") in ("quick", "starter") else None
+    files = _dl_files(spec, ids, preset)
+    if not files:
+        return web.json_response({"error": "Nada que descargar"}, status=400)
+    falta = sum(spec["files"].get(f, {}).get("sizeGB") or 0 for f in files if not os.path.exists(os.path.join(folder_paths.models_dir, f)))
+    os.makedirs(folder_paths.models_dir, exist_ok=True)
+    libre = shutil.disk_usage(folder_paths.models_dir).free / 2**30
+    if falta > libre - 2:
+        return web.json_response({"error": f"No hay espacio: faltan {falta:.1f} GB y hay {libre:.1f} GB libres en {folder_paths.models_dir}"}, status=400)
+    args = ["--" + preset] if preset else ids
+    os.makedirs(_USER, exist_ok=True)
+    if _DL["log"]:
+        _DL["log"].close()
+    _DL["log"] = open(_DL_LOG, "w", encoding="utf-8", errors="replace")
+    env = dict(os.environ, PHANE_MODELS_DIR=folder_paths.models_dir, PYTHONIOENCODING="utf-8")
+    flags = getattr(subprocess, "CREATE_NO_WINDOW", 0)
+    _DL.update(proc=subprocess.Popen([sys.executable, "-I", "-u", script] + args, cwd=_DIR, env=env, stdout=_DL["log"], stderr=subprocess.STDOUT, creationflags=flags),
+               args=args, files=files, totalGB=sum(spec["files"].get(f, {}).get("sizeGB") or 0 for f in files), t0=time.time(), what=preset or ", ".join(ids))
+    return web.json_response({"ok": True, "faltaGB": round(falta, 1)})
+
+
+@routes.get("/phane/api/descargar")
+async def descargar_estado(request):
+    p = _DL["proc"]
+    if not p:
+        return web.json_response({"available": os.path.isfile(os.path.join(_DIR, "tools", "download_models.py")), "running": False})
+    corre = p.poll() is None
+    try:
+        with open(_DL_LOG, encoding="utf-8", errors="replace") as f:
+            txt = f.read()[-6000:]
+    except OSError:
+        txt = ""
+    lineas = [x for x in txt.replace("\r", "\n").split("\n") if x.strip()]
+    return web.json_response({"available": True, "running": corre, "what": _DL["what"], "code": None if corre else p.returncode,
+                              "haveGB": round(_dl_have_gb(_DL["files"], _dl_spec()), 2), "totalGB": round(_DL["totalGB"], 1),
+                              "tail": lineas[-6:], "manual": [x.strip() for x in lineas if ": " in x and ("install_kimodo" in x or "bake_lightx2v" in x or "download_llama" in x)]})
+
+
+@routes.post("/phane/api/instalar")
+async def instalar(request):
+    """Lo que no es una descarga: el instalador de Kimodo (ventana propia) o los packs de nodos (luego reiniciar ComfyUI)."""
+    import subprocess, sys
+    what = (await request.json()).get("what")
+    if what == "kimodo":
+        bat = os.path.join(_DIR, "kimodo", "install_kimodo.bat")
+        if os.name != "nt" or not os.path.isfile(bat):
+            return web.json_response({"error": "El instalador de Kimodo es para Windows: sigue los pasos del README (sección Kimodo)."}, status=400)
+        if not shutil.which("py") or not shutil.which("git"):
+            return web.json_response({"error": "Kimodo necesita Python 3.12 (con el 'py launcher') y git: https://www.python.org/downloads/ · https://git-scm.com/download/win"}, status=400)
+        subprocess.Popen(["cmd", "/c", "start", "Phane - Kimodo", "cmd", "/c", bat], cwd=os.path.dirname(bat))
+        return web.json_response({"ok": True, "msg": "Se abrió la ventana del instalador de Kimodo (~10 min + 16 GB). Cuando termine, recarga Phane."})
+    if what == "nodos":
+        script = os.path.join(_DIR, "tools", "install_nodes.py")
+        if not os.path.isfile(script):
+            return web.json_response({"error": "Esta copia no trae tools/install_nodes.py"}, status=404)
+        subprocess.Popen(["cmd", "/c", "start", "Phane - node packs", "cmd", "/k", sys.executable, "-I", script, "--all"] if os.name == "nt" else [sys.executable, "-I", script, "--all"], cwd=_DIR)
+        return web.json_response({"ok": True, "msg": "Instalando los packs de nodos en una ventana aparte. Cuando termine, reinicia ComfyUI."})
+    return web.json_response({"error": "¿Qué instalo?"}, status=400)
+
+
 NODE_CLASS_MAPPINGS = {}
 NODE_DISPLAY_NAME_MAPPINGS = {}
 

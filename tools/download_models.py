@@ -1,11 +1,12 @@
 # Download Phane's models into ComfyUI/models, using the URLs in ../models.json.
 # Usage (from ComfyUI's folder, with its embedded Python):
-#   python_embeded\python.exe -I custom_nodes\phane\tools\download_models.py --starter        # only what the demo uses
+#   python_embeded\python.exe -I custom_nodes\phane\tools\download_models.py --quick          # Simple mode: images + video (~85 GB)
+#   python_embeded\python.exe -I custom_nodes\phane\tools\download_models.py --starter        # everything the demo uses
 #   python_embeded\python.exe -I custom_nodes\phane\tools\download_models.py video.wan image.klein
 #   python_embeded\python.exe -I custom_nodes\phane\tools\download_models.py --all
 #   add --list to only print what would be downloaded (and the size).
 # Files that already exist are skipped; partial downloads resume. Gated repos need HF_TOKEN in the environment.
-import json, os, sys, urllib.request
+import json, os, re, sys, urllib.request
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 PHANE = os.path.dirname(HERE)
@@ -17,6 +18,8 @@ def pick(spec, args):
         return list(spec["files"])
     if "--starter" in args:
         return list(spec["starter"]["files"])
+    if "--quick" in args:
+        return list(spec["quick"]["files"])
     ids = [a for a in args if not a.startswith("--")]
     if not ids:
         sys.exit(__doc__ or "Pass --starter, --all or engine ids (see models.json).")
@@ -50,6 +53,16 @@ def fetch(url, dst):
     os.replace(tmp, dst)
 
 
+def fetch_repo(howto):
+    """Files that are a whole Hugging Face repo (howto: "hf download <repo> --local-dir ComfyUI/models/<dir>")."""
+    m = re.search(r"hf download (\S+) --local-dir (?:ComfyUI/models/)?(\S+)", howto)
+    if not m:
+        return False
+    from huggingface_hub import snapshot_download   # comes with ComfyUI
+    snapshot_download(m.group(1), local_dir=os.path.join(MODELS, m.group(2)), token=os.environ.get("HF_TOKEN") or None)
+    return True
+
+
 def main():
     args = sys.argv[1:]
     spec = json.load(open(os.path.join(PHANE, "models.json"), encoding="utf-8"))
@@ -57,13 +70,21 @@ def main():
     todo = [f for f in files if not os.path.exists(os.path.join(MODELS, f))]
     gb = sum(spec["files"][f].get("sizeGB") or 0 for f in todo)
     print(f"{len(files)} files, {len(todo)} missing (~{gb:.1f} GB) -> {MODELS}")
-    manual = []
+    manual, failed = [], False
     for f in todo:
         info = spec["files"][f]
         if not info.get("url"):
+            if "--list" not in args and "hf download" in info.get("howto", ""):
+                print(f"- {f} (whole repo, ~{info.get('sizeGB') or '?'} GB)", flush=True)
+                try:
+                    if fetch_repo(info["howto"]):
+                        continue
+                except Exception as e:
+                    print(f"  FAILED: {e}", flush=True)
+                    failed = True
             manual.append(f"{f}: {info.get('howto', 'no URL')}")
             continue
-        print(f"- {f} ({info.get('sizeGB') or '?'} GB)")
+        print(f"- {f} ({info.get('sizeGB') or '?'} GB)", flush=True)
         if "--list" in args:
             continue
         dst = os.path.join(MODELS, f)
@@ -71,9 +92,12 @@ def main():
         try:
             fetch(info["url"], dst)
         except Exception as e:
-            print(f"  FAILED: {e}  ({info['url']})")
+            print(f"  FAILED: {e}  ({info['url']})", flush=True)
+            failed = True
     if manual:
         print("\nThese are not plain downloads:\n  " + "\n  ".join(manual))
+    print("DONE WITH ERRORS" if failed else "DONE", flush=True)   # Phane's download button reads this line
+    sys.exit(1 if failed else 0)
 
 
 if __name__ == "__main__":

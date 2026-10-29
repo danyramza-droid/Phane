@@ -15,6 +15,7 @@ import { motionName } from '../graphs/motion.js';
 import { maniquiView, sheetOf } from '../graphs/pose.js';
 import { REF_FALLBACK } from '../graphs/image.js';
 import mejorar, { describeFile } from './mejorar.js';
+import * as descargas from '../descargas.js';
 
 const { h } = kit;
 const T = (s, ...a) => {
@@ -252,7 +253,41 @@ const exEl = h('div', { class: 'sp-examples' });
 const strip = h('div', { class: 'sp-strip' });
 let seeAll = false;
 const seeAllBtn = h('button', { type: 'button', onclick: () => { seeAll = !seeAll; drawGallery(); } }, T('Ver todo'));
-const viewA = h('div', { class: 'sp-stage' }, verbsEl, composer,
+/* ---- 29-oct: primera vez sin modelos: preparar Phane con un clic (Inicio rápido / Completo) ---- */
+const setupEl = h('div', { class: 'sp-setup', hidden: true });
+async function drawSetup() {
+  const v = engines.engineById('video.wan');
+  if (!core.state.installed || !v || !engines.missingFiles(v, core.state.installed).length) { setupEl.hidden = true; return; }
+  const st = await descargas.estado();
+  if (!st.available) { setupEl.hidden = true; return; }
+  let man = {}; try { man = await core.getJSON(API + '/manifiesto'); } catch { /* */ }
+  const gb = k => (man[k] && man[k].totalGB) ? `~${Math.round(man[k].totalGB)} GB` : '';
+  const prog = h('div', { class: 'sp-setup-prog' });
+  const kimodo = h('button', { type: 'button', class: 'sp-setup-sec', hidden: true, onclick: async () => {
+    kimodo.disabled = true; const r = await descargas.instalar('kimodo'); prog.append(h('p', { class: 'sp-note' }, r.error ? '⚠️ ' + r.error : r.msg)); } }, T('🧰 Instalar Kimodo (movimiento 3D)'));
+  const go = async (preset, btns) => {
+    btns.forEach(b => { b.disabled = true; });
+    const r = await descargas.iniciar({ preset });
+    if (r.error) { prog.innerHTML = ''; prog.append(h('p', { class: 'sp-note' }, '⚠️ ' + r.error)); btns.forEach(b => { b.disabled = false; }); return; }
+    const ok = await descargas.seguir(prog);
+    if (ok && preset === 'starter') kimodo.hidden = false;
+    btns.forEach(b => { b.disabled = false; });
+    drawSetup();
+  };
+  const bq = h('button', { type: 'button', class: 'sp-setup-opt' }, h('b', {}, T('⚡ Inicio rápido') + ' · ' + gb('quick')), h('span', {}, T('Imágenes y videos en el modo simple')));
+  const bf = h('button', { type: 'button', class: 'sp-setup-opt' }, h('b', {}, T('🎬 Completo') + ' · ' + gb('starter')), h('span', {}, T('Todo lo del video: movimiento 3D, juego, poses, Recast')));
+  bq.onclick = () => go('quick', [bq, bf]); bf.onclick = () => go('starter', [bq, bf]);
+  setupEl.innerHTML = '';
+  setupEl.append(h('h3', {}, T('Prepara Phane (una sola vez)')),
+    h('p', { class: 'sp-note' }, T('Todavía no tienes los modelos. Elige uno y Phane los baja solo; puedes cerrar esta pestaña y volver: la descarga sigue y continúa donde se quedó.')),
+    h('div', { class: 'sp-setup-row' }, bq, bf), kimodo, prog);
+  setupEl.hidden = false;
+  if (st.running) { bq.disabled = bf.disabled = true; descargas.seguir(prog).then(() => drawSetup()); }
+}
+descargas.css();
+core.on('models', drawSetup);
+
+const viewA = h('div', { class: 'sp-stage' }, setupEl, verbsEl, composer,
   h('div', { class: 'sp-gallery-h' }, h('span', {}, T('Prueba uno')), h('span', {}, T('Ejemplos'))), exEl,
   h('div', { class: 'sp-gallery-h' }, h('span', {}, T('Tu trabajo')), seeAllBtn), strip);
 

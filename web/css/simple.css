@@ -164,3 +164,12 @@ span.sp-chip{cursor:default}
   .sp-wiz-or{grid-template-columns:1fr}
 }
 @media (prefers-reduced-motion:no-preference){.sp-verb,.sp-chip,.sp-ring{transition:background .15s}}
+
+/* 29-oct: preparar Phane la primera vez */
+.sp-setup{width:100%;max-width:720px;border:1px solid var(--acc,#b48cff);border-radius:16px;padding:16px 18px;background:rgba(180,140,255,.06)}
+.sp-setup h3{margin:0 0 6px}
+.sp-setup-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
+.sp-setup-opt{display:flex;flex-direction:column;gap:4px;text-align:left;padding:12px 14px;border-radius:12px;border:1px solid var(--line,#333);background:var(--card,#1d1a27);color:inherit;cursor:pointer;font:inherit}
+.sp-setup-opt:hover{border-color:var(--acc,#b48cff)} .sp-setup-opt span{font-size:.82rem;color:var(--muted)} .sp-setup-opt:disabled{opacity:.5;cursor:default}
+.sp-setup-sec{margin-top:4px;padding:8px 12px;border-radius:10px;border:1px solid var(--line,#333);background:none;color:inherit;cursor:pointer;font:inherit}
+@media (max-width:640px){.sp-setup-row{grid-template-columns:1fr}}

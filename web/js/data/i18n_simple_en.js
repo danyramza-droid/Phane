@@ -67,4 +67,10 @@ export const EN_SIMPLE = {
   'No hay motor de edición disponible todavía.': 'No editing engine available yet.',
   'Siguiente': 'Next', 'creando…': 'making…', 'en espera…': 'waiting…', 'Guardar': 'Save',
   'Puedes cerrar esta ventana: los trabajos siguen en la cola. Para guardarlo, espera aquí.': 'You can close this window: the jobs stay in the queue. To save it, wait here.',
+  // 29-oct: preparar Phane la primera vez
+  'Prepara Phane (una sola vez)': 'Set up Phane (once)',
+  'Todavía no tienes los modelos. Elige uno y Phane los baja solo; puedes cerrar esta pestaña y volver: la descarga sigue y continúa donde se quedó.': "You don't have the models yet. Pick one and Phane downloads them by itself; you can close this tab and come back: the download keeps going and resumes where it left off.",
+  '⚡ Inicio rápido': '⚡ Quick start', 'Imágenes y videos en el modo simple': 'Images and videos in Simple mode',
+  '🎬 Completo': '🎬 Full', 'Todo lo del video: movimiento 3D, juego, poses, Recast': 'Everything from the demo: 3D motion, Game, poses, Recast',
+  '🧰 Instalar Kimodo (movimiento 3D)': '🧰 Install Kimodo (3D motion)',
 };

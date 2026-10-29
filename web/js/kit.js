@@ -1,5 +1,6 @@
 // Componentes de interfaz reutilizables. Todas las páginas los usan para verse y comportarse igual.
 import * as core from './core.js';
+import * as descargas from './descargas.js';
 import { enginesFor, engineById, pickDefault, missingFiles, TIER_INFO, RAM_CAP, ROLE, LICENSE_INFO } from './engines.js';
 
 /** h('div', {class:'x', onclick:fn}, hijos…) */
@@ -280,16 +281,37 @@ export async function descargaBox(engine, otras = []) {
   const total = faltaGB(engine), sinTam = miss.some(f => !(files[f] && files[f].sizeGB));
   const fila = f => { const x = files[f] || {}; return `<li><code>${core.esc(f)}</code>${x.sizeGB ? ` · ${x.sizeGB} GB` : ''}${x.url ? '' : x.howto ? ` · <span class="muted">${core.esc(x.howto)}</span>` : ''}</li>`; };
   const cmd = `python_embeded\\python.exe -I custom_nodes\\phane\\tools\\download_models.py ${engine.id}`;
+  // 29-oct: descargar con un clic (si esta copia trae tools/download_models.py); la terminal queda como plan B
+  const st = await descargas.estado(), uno = st.available && Object.keys(files).length;
+  const soloInstalador = miss.length && miss.every(f => files[f] && !files[f].url && /install_kimodo|download_llama/.test(files[f].howto || ''));
+  const packs = ['voice', 'sound', 'music'].includes(engine.tool);
+  descargas.css();
   const body = `<p><b>${core.esc(engine.name)}</b> necesita ${miss.length} archivo(s) que no están en <code>ComfyUI/models</code>${total ? ` (~${total.toFixed(1)} GB${sinTam ? ' + los que no tienen tamaño' : ''})` : ''}:</p>` +
     `<ul>${miss.map(fila).join('')}</ul>` +
+    (uno ? `<div id="dl-now-box"><p>${soloInstalador ? '' : `<button class="btn acc" id="dl-now">⬇️ Descargar ahora${total ? ` (${total.toFixed(1)} GB)` : ''}</button> `}` +
+      `${/^motion\.kimodo/.test(engine.id) ? '<button class="btn" id="dl-kimodo">🧰 Instalar Kimodo</button> ' : ''}${packs ? '<button class="btn" id="dl-nodos">🧩 Instalar packs de nodos</button>' : ''}</p>` +
+      `<div id="dl-prog"></div></div>` : '') +
     (Object.keys(files).length
-      ? `<p>Todavía no se puede bajar desde aquí. Abre una terminal en la carpeta de ComfyUI portable (no hace falta cerrar Phane) y corre:</p><p><code id="dl-cmd">${core.esc(cmd)}</code> <button class="btn sm" id="dl-copy">📋 Copiar</button></p>` +
+      ? `<p>${uno ? 'O con la terminal, en la carpeta de ComfyUI portable:' : 'Todavía no se puede bajar desde aquí. Abre una terminal en la carpeta de ComfyUI portable (no hace falta cerrar Phane) y corre:'}</p><p><code id="dl-cmd">${core.esc(cmd)}</code> <button class="btn sm" id="dl-copy">📋 Copiar</button></p>` +
         '<p class="muted">Se salta lo que ya tienes y reanuda descargas cortadas. Los repos con permiso piden HF_TOKEN. Cuando termine, recarga esta página.</p>'
       : '<p class="muted">Esta copia no trae la lista de descargas (models.json). Bájalos con el instalador de Phane o desde la lista de modelos del README, y recarga la página.</p>') +
     (otras.length ? `<p>Además:</p><ul>${otras.map(r => `<li>${core.esc(r)}</li>`).join('')}</ul>` : '');
   const box = confirmBox(descargaLabel(engine), body, { danger: true, cancel: 'Entendido' });
   const b = document.getElementById('dl-copy');   // el aviso ya está en pantalla; al cerrarse se quita del DOM
   if (b) b.onclick = async () => { try { await navigator.clipboard.writeText(cmd); b.textContent = '✓ Copiado'; } catch { b.textContent = 'Selecciónalo a mano'; } };
+  const prog = document.getElementById('dl-prog'), now = document.getElementById('dl-now');
+  if (prog && st.running) { if (now) now.disabled = true; descargas.seguir(prog); }   // ya hay una descarga: se ve su avance
+  if (now) now.onclick = async () => {
+    now.disabled = true;
+    const r = await descargas.iniciar({ ids: [engine.id] });
+    if (r.error) { prog.innerHTML = `<p class="muted">⚠️ ${core.esc(r.error)}</p>`; now.disabled = false; return; }
+    const ok = await descargas.seguir(prog);
+    now.disabled = false; if (ok) now.textContent = '✅ Descargado';
+  };
+  for (const [id, what] of [['dl-kimodo', 'kimodo'], ['dl-nodos', 'nodos']]) {
+    const x = document.getElementById(id);
+    if (x) x.onclick = async () => { x.disabled = true; const r = await descargas.instalar(what); prog.innerHTML = `<p class="muted">${core.esc(r.error ? '⚠️ ' + r.error : r.msg)}</p>`; x.disabled = !!r.ok; };
+  }
   return box;
 }
 

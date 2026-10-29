@@ -72,18 +72,25 @@ When you want every option, switch to **Complete** (top bar, or http://127.0.0.1
 > Don't use `--use-ck-attention` or `--fast fp16_accumulation` with Phane: several engines produce NaNs/black frames with them on fp16 GPUs.
 
 ## Models
-You don't need all of them. Each engine shows which files it is missing; install only the engines you want.
-[`models.json`](models.json) lists every engine, its files (paths relative to `ComfyUI/models`), the download URL and the size of each file.
+You don't need all of them, and **you don't need a terminal**: open http://127.0.0.1:8188/phane/simple and, if no models are
+installed yet, Phane shows **Set up Phane** with two buttons. It downloads by itself with a progress bar (you can close the tab;
+it keeps going and resumes where it stopped). Later, any feature that is missing shows **⬇️ Download now (X GB)**.
 
-**Starter pack** — exactly what the demo video uses (text → 3D motion → mannequin → your character in 4 angles → video → Recast → upscale),
-≈ 175 GB in `ComfyUI/models` (`starter.totalGB` in models.json) + Kimodo (≈ 16.5 GB, see below):
+| Level | What you get | Size | Button or command |
+|---|---|---|---|
+| ⚡ **Quick start** | Simple mode: images (with your character) and videos, 🎬 Make final; Image, Edit, Video, Storyboard | ≈ 85 GB | *Quick start*, or `download_models.py --quick` |
+| 🎬 **Full** (the demo) | + 🕺 text → 3D motion, 🎮 Game (your character in 4 angles), exact pose, 🎭 Recast | ≈ 175 GB (incl. Kimodo's 16.5 GB) | *Full*, then *Install Kimodo*; or `--starter` + `kimodo/install_kimodo.bat` |
+| ➕ **Any other engine** | 🎯 Video guide, 🗣️ Avatars, 🎵 voice and music, LTX, Qwen‑Image… | 4–60 GB each | **⬇️ Download now** on that page, or `download_models.py <engine id>` |
+
 ```bash
-python_embeded\python.exe -I ComfyUI\custom_nodes\phane\tools\download_models.py --starter --list   # what and how big
-python_embeded\python.exe -I ComfyUI\custom_nodes\phane\tools\download_models.py --starter          # download (resumes)
+python_embeded\python.exe -I ComfyUI\custom_nodes\phane\tools\download_models.py --quick --list     # what and how big
+python_embeded\python.exe -I ComfyUI\custom_nodes\phane\tools\download_models.py --quick            # download (resumes)
 python_embeded\python.exe -I ComfyUI\custom_nodes\phane\tools\download_models.py video.ltx23 image.qwen21   # any engines
 ```
-Existing files are skipped. Gated repos need `HF_TOKEN` set. The fast Recast engine uses a model you build locally
-(the lightx2v LoRA baked into Wan Animate 2, CPU only): `python_embeded\python.exe -I ComfyUI\custom_nodes\phane\tools\bake_lightx2v.py`.
+[`models.json`](models.json) lists every engine, its files (paths relative to `ComfyUI/models`), the download URL and the size of each file.
+Existing files are skipped. Gated repos need `HF_TOKEN` set. Voice, sound and music also need their node packs
+(`install_nodes.py --all`, or the *Install node packs* button) and a ComfyUI restart. The full Recast engine (`recast.animate2`)
+uses a model you build locally (the lightx2v LoRA baked into Wan Animate 2, CPU only): `tools\bake_lightx2v.py`.
 
 ⚠️ **Licenses differ per model.** Every engine runs on open weights, but not all of them allow commercial use. Engines with
 non‑commercial weights carry a 🔴 tag in the app; turn on **💼 Commercial use only** (top bar) to hide and block them.

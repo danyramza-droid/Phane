@@ -82,7 +82,7 @@ const engineFile = f => f && { kind: f.kind, ref: f.ref, abs: f.abs, w: f.w, h: 
 const usable = (core, e) => e && !missingFiles(e, core.state.installed).length && e.ramGB <= RAM_CAP;
 /** Mejor motor "HD Pro" para el switch de poder actual. */
 function bestPro(core) {
-  const ids = core.state.tier === 'highend' ? ['upscale.seedvr2_7b', 'upscale.seedvr2_3b'] : ['upscale.seedvr2_3b'];
+  const ids = core.state.tier === 'highend' ? ['upscale.seedvr2_7b', 'upscale.seedvr2_3b'] : ['upscale.seedvr2_3b', 'upscale.seedvr2_7b'];   // 29-oct: en Ligero, si no está el 3B usa el 7B (antes fallaba con el starter)
   return ids.map(engineById).find(e => usable(core, e)) || engineById(ids[0]);
 }
 const isHD = f => /^(hd|hdpro|hdmax)_/i.test(f.filename || '');
