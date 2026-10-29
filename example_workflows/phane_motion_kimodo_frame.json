@@ -1,0 +1,70 @@
+{
+ "last_node_id": 2,
+ "last_link_id": 0,
+ "nodes": [
+  {
+   "id": 1,
+   "type": "PhaneKimodoCuadro",
+   "pos": [
+    40,
+    80
+   ],
+   "size": [
+    340,
+    142
+   ],
+   "flags": {},
+   "order": 0,
+   "mode": 0,
+   "inputs": [],
+   "outputs": [],
+   "properties": {
+    "Node name for S&R": "PhaneKimodoCuadro"
+   },
+   "widgets_values": [
+    "cartwheel_lands_crouch_00001",
+    45,
+    "igual_que_el_video",
+    false
+   ]
+  },
+  {
+   "id": 2,
+   "type": "Note",
+   "pos": [
+    40,
+    -260
+   ],
+   "size": [
+    520,
+    220
+   ],
+   "flags": {},
+   "order": 1,
+   "mode": 0,
+   "inputs": [],
+   "outputs": [],
+   "properties": {
+    "text": ""
+   },
+   "widgets_values": [
+    "Phane example: motion.kimodo_frame (Kimodo · single-frame skeleton)\n\nBuilt by Phane (custom_nodes/phane) from the same graph its web UI queues.\nPick your own input image / video in the Load nodes, then Queue.\n\nModels (relative to ComfyUI/models):\n  kimodo/Kimodo-SOMA-RP-v1.2.safetensors\n\nDownload them with: python tools/download_models.py motion.kimodo_frame"
+   ],
+   "color": "#432",
+   "bgcolor": "#653"
+  }
+ ],
+ "links": [],
+ "groups": [],
+ "config": {},
+ "extra": {
+  "ds": {
+   "scale": 0.75,
+   "offset": [
+    0,
+    300
+   ]
+  }
+ },
+ "version": 0.4
+}

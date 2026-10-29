@@ -1,0 +1,48 @@
+[
+ {
+  "id": "p_phany_sample",
+  "name": "Phany",
+  "photos": [
+   {
+    "ref": "personajes/phany/phany_diseno.png",
+    "url": "/view?filename=phany_diseno.png&subfolder=personajes%2Fphany&type=input",
+    "w": 1152,
+    "h": 2048,
+    "filename": "phany_diseno.png",
+    "subfolder": "personajes/phany",
+    "type": "input"
+   },
+   {
+    "ref": "personajes/phany/phany_cabeza.png",
+    "url": "/view?filename=phany_cabeza.png&subfolder=personajes%2Fphany&type=input",
+    "w": 1024,
+    "h": 1024,
+    "filename": "phany_cabeza.png",
+    "subfolder": "personajes/phany",
+    "type": "input"
+   }
+  ],
+  "desc": "cheerful young delivery girl, curly purple hair in two puffs, big yellow headphones, oversized lilac hoodie with a star patch, white shorts, striped knee socks, chunky roller skates with yellow wheels, knee pads, freckles",
+  "vistas": {
+   "side": {
+    "ref": "personajes/phany/phany_perfil.png",
+    "url": "/view?filename=phany_perfil.png&subfolder=personajes%2Fphany&type=input",
+    "w": 1344,
+    "h": 1344,
+    "filename": "phany_perfil.png",
+    "subfolder": "personajes/phany",
+    "type": "input"
+   },
+   "back": {
+    "ref": "personajes/phany/phany_espalda.png",
+    "url": "/view?filename=phany_espalda.png&subfolder=personajes%2Fphany&type=input",
+    "w": 1344,
+    "h": 1344,
+    "filename": "phany_espalda.png",
+    "subfolder": "personajes/phany",
+    "type": "input"
+   }
+  },
+  "arma": "glowing square delivery box held in one hand"
+ }
+]

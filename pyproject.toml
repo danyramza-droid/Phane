@@ -1,0 +1,26 @@
+[project]
+name = "phane"
+description = "Phane: a local AI studio web app inside ComfyUI. Text, image, video, recast, avatar, audio and 3D motion engines (open weights) behind one simple UI at /phane; every result opens back in ComfyUI as a normal workflow."
+version = "0.1.0"
+license = { file = "LICENSE" }
+requires-python = ">=3.10"
+dependencies = ["transformers>=4.45"]
+classifiers = [
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX :: Linux",
+    "Environment :: GPU :: NVIDIA CUDA",
+]
+
+[project.urls]
+# TODO before `comfy node publish`: point these to the real public repo
+Repository = "https://github.com/danyramza-droid/phane"
+Documentation = "https://github.com/danyramza-droid/phane#readme"
+"Bug Tracker" = "https://github.com/danyramza-droid/phane/issues"
+
+[tool.comfy]
+PublisherId = ""   # TODO: your Comfy Registry publisher id (https://registry.comfy.org)
+DisplayName = "Phane"
+Icon = ""          # TODO: URL of a square PNG/SVG, max 400x400 (e.g. raw.githubusercontent.com/danyramza-droid/phane/main/docs/icon.png)
+Banner = ""        # optional: URL of a 21:9 image
+requires-comfyui = ">=0.41.0"   # tested on 0.41.0 + frontend 1.55.17 (Flux2, SAM 3, V3 dynamic combos)
+includes = ["example_workflows"]

@@ -1,0 +1,3 @@
+# Phane uses the packages already shipped with ComfyUI.
+# Depth Anything V2 node:
+transformers>=4.45

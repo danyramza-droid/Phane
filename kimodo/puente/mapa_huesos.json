@@ -1,0 +1,217 @@
+{
+ "_nota": "Kimodo SOMA (BVH) -> Mixamo / Godot SkeletonProfileHumanoid. OJO: SOMA LeftLeg = muslo (Mixamo LeftUpLeg); SOMA LeftShin = Mixamo LeftLeg.",
+ "columnas": [
+  "mixamo (anteponer mixamorig: o mixamorig_)",
+  "godot_humanoid"
+ ],
+ "huesos": {
+  "Hips": [
+   "Hips",
+   "Hips"
+  ],
+  "Spine1": [
+   "Spine",
+   "Spine"
+  ],
+  "Spine2": [
+   "Spine1",
+   "Chest"
+  ],
+  "Chest": [
+   "Spine2",
+   "UpperChest"
+  ],
+  "Neck1": [
+   "Neck",
+   "Neck"
+  ],
+  "Head": [
+   "Head",
+   "Head"
+  ],
+  "LeftShoulder": [
+   "LeftShoulder",
+   "LeftShoulder"
+  ],
+  "LeftArm": [
+   "LeftArm",
+   "LeftUpperArm"
+  ],
+  "LeftForeArm": [
+   "LeftForeArm",
+   "LeftLowerArm"
+  ],
+  "LeftHand": [
+   "LeftHand",
+   "LeftHand"
+  ],
+  "LeftLeg": [
+   "LeftUpLeg",
+   "LeftUpperLeg"
+  ],
+  "LeftShin": [
+   "LeftLeg",
+   "LeftLowerLeg"
+  ],
+  "LeftFoot": [
+   "LeftFoot",
+   "LeftFoot"
+  ],
+  "LeftToeBase": [
+   "LeftToeBase",
+   "LeftToes"
+  ],
+  "LeftHandThumb1": [
+   "LeftHandThumb1",
+   "LeftThumbMetacarpal"
+  ],
+  "LeftHandThumb2": [
+   "LeftHandThumb2",
+   "LeftThumbProximal"
+  ],
+  "LeftHandThumb3": [
+   "LeftHandThumb3",
+   "LeftThumbDistal"
+  ],
+  "LeftHandIndex2": [
+   "LeftHandIndex1",
+   "LeftIndexProximal"
+  ],
+  "LeftHandIndex3": [
+   "LeftHandIndex2",
+   "LeftIndexIntermediate"
+  ],
+  "LeftHandIndex4": [
+   "LeftHandIndex3",
+   "LeftIndexDistal"
+  ],
+  "LeftHandMiddle2": [
+   "LeftHandMiddle1",
+   "LeftMiddleProximal"
+  ],
+  "LeftHandMiddle3": [
+   "LeftHandMiddle2",
+   "LeftMiddleIntermediate"
+  ],
+  "LeftHandMiddle4": [
+   "LeftHandMiddle3",
+   "LeftMiddleDistal"
+  ],
+  "LeftHandRing2": [
+   "LeftHandRing1",
+   "LeftRingProximal"
+  ],
+  "LeftHandRing3": [
+   "LeftHandRing2",
+   "LeftRingIntermediate"
+  ],
+  "LeftHandRing4": [
+   "LeftHandRing3",
+   "LeftRingDistal"
+  ],
+  "LeftHandPinky2": [
+   "LeftHandPinky1",
+   "LeftLittleProximal"
+  ],
+  "LeftHandPinky3": [
+   "LeftHandPinky2",
+   "LeftLittleIntermediate"
+  ],
+  "LeftHandPinky4": [
+   "LeftHandPinky3",
+   "LeftLittleDistal"
+  ],
+  "RightShoulder": [
+   "RightShoulder",
+   "RightShoulder"
+  ],
+  "RightArm": [
+   "RightArm",
+   "RightUpperArm"
+  ],
+  "RightForeArm": [
+   "RightForeArm",
+   "RightLowerArm"
+  ],
+  "RightHand": [
+   "RightHand",
+   "RightHand"
+  ],
+  "RightLeg": [
+   "RightUpLeg",
+   "RightUpperLeg"
+  ],
+  "RightShin": [
+   "RightLeg",
+   "RightLowerLeg"
+  ],
+  "RightFoot": [
+   "RightFoot",
+   "RightFoot"
+  ],
+  "RightToeBase": [
+   "RightToeBase",
+   "RightToes"
+  ],
+  "RightHandThumb1": [
+   "RightHandThumb1",
+   "RightThumbMetacarpal"
+  ],
+  "RightHandThumb2": [
+   "RightHandThumb2",
+   "RightThumbProximal"
+  ],
+  "RightHandThumb3": [
+   "RightHandThumb3",
+   "RightThumbDistal"
+  ],
+  "RightHandIndex2": [
+   "RightHandIndex1",
+   "RightIndexProximal"
+  ],
+  "RightHandIndex3": [
+   "RightHandIndex2",
+   "RightIndexIntermediate"
+  ],
+  "RightHandIndex4": [
+   "RightHandIndex3",
+   "RightIndexDistal"
+  ],
+  "RightHandMiddle2": [
+   "RightHandMiddle1",
+   "RightMiddleProximal"
+  ],
+  "RightHandMiddle3": [
+   "RightHandMiddle2",
+   "RightMiddleIntermediate"
+  ],
+  "RightHandMiddle4": [
+   "RightHandMiddle3",
+   "RightMiddleDistal"
+  ],
+  "RightHandRing2": [
+   "RightHandRing1",
+   "RightRingProximal"
+  ],
+  "RightHandRing3": [
+   "RightHandRing2",
+   "RightRingIntermediate"
+  ],
+  "RightHandRing4": [
+   "RightHandRing3",
+   "RightRingDistal"
+  ],
+  "RightHandPinky2": [
+   "RightHandPinky1",
+   "RightLittleProximal"
+  ],
+  "RightHandPinky3": [
+   "RightHandPinky2",
+   "RightLittleIntermediate"
+  ],
+  "RightHandPinky4": [
+   "RightHandPinky3",
+   "RightLittleDistal"
+  ]
+ }
+}

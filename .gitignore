@@ -1,0 +1,19 @@
+# pesos y salidas: nunca al repo
+*.safetensors
+*.gguf
+*.pt
+*.pth
+*.ckpt
+*.bin
+*.onnx
+__pycache__/
+*.pyc
+output/
+input/
+tests/out/
+web/previews/*
+!web/previews/phane/
+kimodo/venv/
+kimodo/hf_cache/
+# kimodo/cache_textos/ SÍ va: textos ya leídos (solo números), para que los movimientos del demo funcionen sin Llama
+node_modules/
