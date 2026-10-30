@@ -35,11 +35,18 @@ frame interpolation — 45 engines behind one friendly web UI, running on your o
 - Node.js 18+ (only for the test tools)
 
 ## Install
+### Quick (Windows portable) — clone, double-click, done
 ```bash
-cd ComfyUI/custom_nodes
+cd ComfyUI_windows_portable/ComfyUI/custom_nodes
 git clone https://github.com/danyramza-droid/phane
 ```
-Install the node packs it uses, **at the commits Phane was tested with** (close ComfyUI first; from the `ComfyUI_windows_portable` folder):
+(No git? Download the repo as a .zip and unzip it there as `phane`.) Close ComfyUI, then double-click
+**`custom_nodes\phane\install_phane.bat`**. It installs the node packs at the tested commits and adds **`run_phane.bat`**
+next to `run_nvidia_gpu.bat`. Start ComfyUI with `run_phane.bat`: it uses the right flags and opens
+**http://127.0.0.1:8188/phane/simple** in your browser. The first time, press **Set up Phane** to download the models.
+
+### Manual (any ComfyUI install)
+Clone the repo into `ComfyUI/custom_nodes` as above, then install the node packs it uses, **at the commits Phane was tested with** (close ComfyUI first; from the `ComfyUI_windows_portable` folder):
 ```bash
 python_embeded\python.exe -I ComfyUI\custom_nodes\phane\tools\install_nodes.py          # starter: what the demo needs
 python_embeded\python.exe -I ComfyUI\custom_nodes\phane\tools\install_nodes.py --all    # + sound and voices
