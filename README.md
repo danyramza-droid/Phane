@@ -43,7 +43,11 @@ git clone https://github.com/danyramza-droid/phane
 (No git? Download the repo as a .zip and unzip it there as `phane`.) Close ComfyUI, then double-click
 **`custom_nodes\phane\install_phane.bat`**. It installs the node packs at the tested commits and adds **`run_phane.bat`**
 next to `run_nvidia_gpu.bat`. Start ComfyUI with `run_phane.bat`: it uses the right flags and opens
-**http://127.0.0.1:8188/phane/simple** in your browser. The first time, press **Set up Phane** to download the models.
+**http://127.0.0.1:8188/phane/simple** in your browser. The first time, press **Set up Phane** to download the models
+(⚡ *Quick start* ≈ 85 GB is enough to try it; 🎬 *Full* is what the demo uses).
+At the end it offers to install **Kimodo** (text → 3D motion, 🎮 Game), which needs **Python 3.12** (with the *py launcher*) and
+**git** installed in Windows. Downloaded the .zip and Windows shows *“Windows protected your PC”* when you double‑click?
+Choose *More info → Run anyway* (or right‑click the .zip → *Properties → Unblock* before unzipping).
 
 ### Manual (any ComfyUI install)
 Clone the repo into `ComfyUI/custom_nodes` as above, then install the node packs it uses, **at the commits Phane was tested with** (close ComfyUI first; from the `ComfyUI_windows_portable` folder):
