@@ -5,7 +5,7 @@ Image, edit, video, exact pose, text‑to‑motion, recast, storyboards, talking
 frame interpolation — 45 engines behind one friendly web UI, running on your own GPU. No credits, no cloud APIs, no partner nodes.
 
 > Built for the ComfyUI "Open Source Higgsfield" challenge (Open Weights Only category).
-> 📺 **Demo video:** [Watch the 2-minute demo on YouTube](https://youtu.be/CLwIPLWapsk)
+> 📺 **Demo video:** [Watch the 2-minute demo on YouTube](https://youtu.be/Icg2AS-Eumk)
 > UI in English, with a one‑click switch to Spanish (ES/EN, top bar).
 
 ## Highlights
